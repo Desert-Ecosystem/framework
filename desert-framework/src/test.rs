@@ -14,7 +14,9 @@ mod tests {
     struct TestService1;
 
     impl Service for TestService1 {
-        fn name() -> String { "TestService1".into() }
+        fn name() -> String {
+            "TestService1".into()
+        }
 
         async fn new(_manager: Arc<DependencyManager>) -> Self {
             Self
@@ -22,13 +24,17 @@ mod tests {
     }
 
     impl TestService1 {
-        fn get_hello(&self) -> &str { "hello from service 1" }
+        fn get_hello(&self) -> &str {
+            "hello from service 1"
+        }
     }
 
     struct TestService2;
 
     impl Service for TestService2 {
-        fn name() -> String { "TestService2".into() }
+        fn name() -> String {
+            "TestService2".into()
+        }
 
         fn deps() -> Deps {
             vec![dep::<TestService1>()]
@@ -43,7 +49,9 @@ mod tests {
     struct NoDepsService;
 
     impl Service for NoDepsService {
-        fn name() -> String { "NoDepsService".into() }
+        fn name() -> String {
+            "NoDepsService".into()
+        }
 
         async fn new(_manager: Arc<DependencyManager>) -> Self {
             Self
@@ -99,18 +107,12 @@ mod tests {
         }
 
         #[get("/items/{id}")]
-        async fn get_item(
-            &self,
-            axum::extract::Path(id): axum::extract::Path<String>,
-        ) -> String {
+        async fn get_item(&self, axum::extract::Path(id): axum::extract::Path<String>) -> String {
             format!("item: {}", id)
         }
 
         #[post("/items")]
-        async fn add_item(
-            &self,
-            axum::extract::Json(body): axum::extract::Json<String>,
-        ) -> String {
+        async fn add_item(&self, axum::extract::Json(body): axum::extract::Json<String>) -> String {
             format!("added: {}", body)
         }
     }
@@ -134,7 +136,9 @@ mod tests {
 
         assert_eq!(response.status(), StatusCode::OK);
 
-        let body = axum::body::to_bytes(response.into_body(), usize::MAX).await.unwrap();
+        let body = axum::body::to_bytes(response.into_body(), usize::MAX)
+            .await
+            .unwrap();
         assert_eq!(body, "hello world");
     }
 
@@ -155,7 +159,9 @@ mod tests {
 
         assert_eq!(response.status(), StatusCode::OK);
 
-        let body = axum::body::to_bytes(response.into_body(), usize::MAX).await.unwrap();
+        let body = axum::body::to_bytes(response.into_body(), usize::MAX)
+            .await
+            .unwrap();
         assert_eq!(body, "item: 42");
     }
 
@@ -178,7 +184,9 @@ mod tests {
 
         assert_eq!(response.status(), StatusCode::OK);
 
-        let body = axum::body::to_bytes(response.into_body(), usize::MAX).await.unwrap();
+        let body = axum::body::to_bytes(response.into_body(), usize::MAX)
+            .await
+            .unwrap();
         assert_eq!(body, "added: test item");
     }
 
@@ -245,7 +253,9 @@ mod tests {
             .unwrap();
 
         assert_eq!(response.status(), StatusCode::OK);
-        let body = axum::body::to_bytes(response.into_body(), usize::MAX).await.unwrap();
+        let body = axum::body::to_bytes(response.into_body(), usize::MAX)
+            .await
+            .unwrap();
         assert_eq!(body, "from another");
     }
 }
