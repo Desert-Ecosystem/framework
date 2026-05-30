@@ -10,7 +10,7 @@ repository = "https://git.desert-chat.ru/Desert-Ecosystem/framework"
 tokio = { version = "1.47.1", features = ["sync"] }
 log = "0.4.28"
 axum = "0.8"
-desert-framework-macros = "0.1.1"
+desert-framework-macros = { path = "../desert-framework-macros" }
 
 [dev-dependencies]
 tokio = { version = "1.47.1", features = ["full"] }

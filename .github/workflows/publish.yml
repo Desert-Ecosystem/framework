@@ -28,6 +28,10 @@ jobs:
       - name: Login to crates.io
         run: cargo login ${{ secrets.CRATES_TOKEN }}
 
+      - name: Prepare desert-framework for publish
+        run: |
+          sed -i 's|desert-framework-macros = { path = "../desert-framework-macros" }|desert-framework-macros = "0.1.1"|' desert-framework/Cargo.toml
+
       - name: Publish desert-framework-macros
         run: |
           if [ "${{ inputs.dry_run }}" = "true" ]; then
