@@ -13,6 +13,12 @@ pub struct DependencyManager {
     dependencies: Arc<RwLock<HashMap<TypeId, Arc<dyn Any + Send + Sync>>>>,
 }
 
+impl Default for DependencyManager {
+    fn default() -> Self {
+        Self::new()
+    }
+}
+
 impl DependencyManager {
     pub fn new() -> Self {
         Self {
@@ -55,13 +61,13 @@ impl DependencyManager {
             service_instance.clone() as Arc<dyn Any + Send + Sync>,
         );
 
-        return service_instance;
+        service_instance
     }
 
     async fn check_by_type_id(&self, type_id: TypeId) -> bool {
         let deps = self.dependencies.read().await;
         let got = deps.get(&type_id);
-        return got.is_some();
+        got.is_some()
     }
 
     pub async fn get<T: Send + Sync + 'static + Service>(&self, from: &str) -> Option<Arc<T>> {

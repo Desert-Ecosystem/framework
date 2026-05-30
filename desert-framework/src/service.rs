@@ -8,7 +8,7 @@ pub trait Service {
         Self: Sized;
 
     fn deps() -> Deps {
-        return vec![];
+        vec![]
     }
 
     fn name() -> String;
