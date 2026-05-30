@@ -35,9 +35,9 @@ jobs:
       - name: Publish desert-framework-macros
         run: |
           if [ "${{ inputs.dry_run }}" = "true" ]; then
-            cargo publish -p desert-framework-macros --dry-run
+            cargo publish -p desert-framework-macros --dry-run --allow-dirty
           else
-            cargo publish -p desert-framework-macros
+            cargo publish -p desert-framework-macros --allow-dirty
           fi
 
       - name: Wait for crates.io index
@@ -47,7 +47,7 @@ jobs:
       - name: Publish desert_framework
         run: |
           if [ "${{ inputs.dry_run }}" = "true" ]; then
-            cargo publish -p desert_framework --dry-run
+            cargo publish -p desert_framework --dry-run --allow-dirty
           else
-            cargo publish -p desert_framework
+            cargo publish -p desert_framework --allow-dirty
           fi
