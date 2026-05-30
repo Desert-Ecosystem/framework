@@ -1,19 +1,19 @@
 # Desert Framework
 
-[Русская версия](README_ru.md)
+[English version](README.md)
 
-Micro-framework for building backend applications in Rust with Axum. Provides dependency injection system and macros for declarative route definitions.
+Микрофреймворк для построения backend приложений на Rust с Axum. Предоставляет систему внедрения зависимостей и макросы для декларативного определения маршрутов.
 
-## Installation
+## Установка
 
 ```toml
 [dependencies]
 desert-framework = "0.1.0"
 ```
 
-## Modules
+## Модули
 
-### Service — dependency injection system
+### Service — система внедрения зависимостей
 
 ```rust
 use std::sync::Arc;
@@ -47,19 +47,19 @@ impl Service for UserService {
     }
 }
 
-// Initialization
+// Инициализация
 let manager = DependencyManager::new();
 let db = manager.register::<DatabaseService>().await;
 let user_svc = manager.register::<UserService>().await;
 
-// Injection via macro
+// Инъекция через макрос
 inject_services!(manager, "MyFunc", {
     db: DatabaseService,
     users: UserService,
 });
 ```
 
-### Controller — macros for Axum routes
+### Controller — макросы для Axum маршрутов
 
 ```rust
 use desert_framework::{controller, get, post, impl_routes};
@@ -88,7 +88,7 @@ impl UserController {
 
 impl_routes!(UserController, [list, get, create]);
 
-// Usage in application
+// Использование в приложении
 let controller = UserController { user_service };
 let router = controller.get_router();
 
@@ -97,20 +97,20 @@ let app = Router::new()
     .merge(post_controller.get_router());
 ```
 
-## Macros
+## Макросы
 
-| Macro | Description |
-|-------|-------------|
-| `#[controller(path = "/prefix")]` | Defines controller with base path |
-| `#[get("/path")]` | GET route |
-| `#[post("/path")]` | POST route |
-| `#[put("/path")]` | PUT route |
-| `#[delete("/path")]` | DELETE route |
-| `#[patch("/path")]` | PATCH route |
-| `impl_routes!(Type, [methods])` | Generates `get_router()` for controller |
-| `inject_services!` | Quick service injection |
+| Макрос | Назначение |
+|--------|-----------|
+| `#[controller(path = "/prefix")]` | Определяет контроллер с базовым путём |
+| `#[get("/path")]` | GET маршрут |
+| `#[post("/path")]` | POST маршрут |
+| `#[put("/path")]` | PUT маршрут |
+| `#[delete("/path")]` | DELETE маршрут |
+| `#[patch("/path")]` | PATCH маршрут |
+| `impl_routes!(Type, [methods])` | Генерирует `get_router()` для контроллера |
+| `inject_services!` | Быстрая инъекция сервисов |
 
-## Route Parameters
+## Параметры маршрутов
 
 ```rust
 #[get("/items/{id}")]
@@ -119,6 +119,6 @@ async fn get_item(&self, Path(id): Path<String>) -> String {
 }
 ```
 
-## License
+## Лицензия
 
 MIT
