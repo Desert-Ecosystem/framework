@@ -16,9 +16,10 @@ env:
   CARGO_TERM_COLOR: always
 
 jobs:
-  publish:
+  publish-macros:
     runs-on: ubuntu-latest
-
+    outputs:
+      version: ${{ steps.get_version.outputs.version }}
     steps:
       - uses: actions/checkout@v4
 
@@ -28,9 +29,9 @@ jobs:
       - name: Login to crates.io
         run: cargo login ${{ secrets.CRATES_TOKEN }}
 
-      - name: Prepare desert-framework for publish
-        run: |
-          sed -i 's|desert-framework-macros = { path = "../desert-framework-macros" }|desert-framework-macros = "0.1.0"|' desert-framework/Cargo.toml
+      - name: Get macros version
+        id: get_version
+        run: echo "version=$(cargo metadata --no-deps --format-version=1 | jq -r '.packages[] | select(.name=="desert-framework-macros") | .version')" >> $GITHUB_OUTPUT
 
       - name: Publish desert-framework-macros
         run: |
@@ -40,9 +41,25 @@ jobs:
             cargo publish -p desert-framework-macros --allow-dirty
           fi
 
+  publish-framework:
+    runs-on: ubuntu-latest
+    needs: publish-macros
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Install Rust
+        uses: dtolnay/rust-toolchain@stable
+
+      - name: Login to crates.io
+        run: cargo login ${{ secrets.CRATES_TOKEN }}
+
       - name: Wait for crates.io index
-        if: inputs.dry_run == 'false'
         run: sleep 30
+
+      - name: Replace path dependency with version
+        run: |
+          MACROS_VERSION=${{ needs.publish-macros.outputs.version }}
+          sed -i "s|desert-framework-macros = { path = \"../desert-framework-macros\" }|desert-framework-macros = \"${MACROS_VERSION}\"|" desert-framework/Cargo.toml
 
       - name: Publish desert_framework
         run: |
