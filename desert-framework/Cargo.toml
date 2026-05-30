@@ -1,6 +1,6 @@
 [package]
 name = "desert_framework"
-version = "0.1.0"
+version = "0.1.1"
 edition = "2021"
 description = "Micro-framework for building backend applications in Rust with Axum"
 license = "MIT"
@@ -10,7 +10,7 @@ repository = "https://git.desert-chat.ru/Desert-Ecosystem/framework"
 tokio = { version = "1.47.1", features = ["sync"] }
 log = "0.4.28"
 axum = "0.8"
-desert-framework-macros = "0.1.0"
+desert-framework-macros = "0.1.1"
 
 [dev-dependencies]
 tokio = { version = "1.47.1", features = ["full"] }
