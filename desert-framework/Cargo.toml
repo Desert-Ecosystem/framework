@@ -9,3 +9,8 @@ log = "0.4.28"
 extended_rust = { git = "https://github.com/AlexIndustrial/extended_rust.git" }
 axum = "0.8"
 desert-framework-macros = { path = "../desert-framework-macros" }
+
+[dev-dependencies]
+tokio = { version = "1.47.1", features = ["full"] }
+tower = { version = "0.5", features = ["util"] }
+tower-http = { version = "0.6", features = ["util"] }
