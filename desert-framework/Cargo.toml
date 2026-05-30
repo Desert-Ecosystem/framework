@@ -9,7 +9,6 @@ repository = "https://git.desert-chat.ru/Desert-Ecosystem/framework"
 [dependencies]
 tokio = { version = "1.47.1", features = ["sync"] }
 log = "0.4.28"
-extended_rust = { git = "https://github.com/AlexIndustrial/extended_rust.git" }
 axum = "0.8"
 desert-framework-macros = "0.1.0"
 
