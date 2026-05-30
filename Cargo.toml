@@ -1,0 +1,10 @@
+[workspace]
+resolver = "2"
+members = [
+    "desert-framework",
+    "desert-framework-macros",
+]
+
+[workspace.dependencies]
+desert-framework = { path = "desert-framework" }
+desert-framework-macros = { path = "desert-framework-macros" }

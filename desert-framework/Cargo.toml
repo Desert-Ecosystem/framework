@@ -1,0 +1,11 @@
+[package]
+name = "desert_framework"
+version = "0.1.0"
+edition = "2021"
+
+[dependencies]
+tokio = { version = "1.47.1", features = ["sync"] }
+log = "0.4.28"
+extended_rust = { git = "https://github.com/AlexIndustrial/extended_rust.git" }
+axum = "0.8"
+desert-framework-macros = { path = "../desert-framework-macros" }
