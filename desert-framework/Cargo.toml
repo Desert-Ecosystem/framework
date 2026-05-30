@@ -2,6 +2,9 @@
 name = "desert_framework"
 version = "0.1.0"
 edition = "2021"
+description = "Micro-framework for building backend applications in Rust with Axum"
+license = "MIT"
+repository = "https://git.desert-chat.ru/Desert-Ecosystem/framework"
 
 [dependencies]
 tokio = { version = "1.47.1", features = ["sync"] }

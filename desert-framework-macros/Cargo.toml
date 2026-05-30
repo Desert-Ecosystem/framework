@@ -2,6 +2,9 @@
 name = "desert-framework-macros"
 version = "0.1.0"
 edition = "2021"
+description = "Procedural macros for desert-framework"
+license = "MIT"
+repository = "https://git.desert-chat.ru/Desert-Ecosystem/framework"
 
 [lib]
 proc-macro = true
