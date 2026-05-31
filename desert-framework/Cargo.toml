@@ -10,6 +10,7 @@ repository = "https://github.com/Desert-Ecosystem/framework"
 tokio = { version = "1.47.1", features = ["sync"] }
 log = "0.4.28"
 axum = "0.8"
+inventory = "0.3"
 desert-framework-macros = { path = "../desert-framework-macros" }
 
 [dev-dependencies]

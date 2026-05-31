@@ -9,7 +9,7 @@ mod tests {
     use crate::dependency::{dep, Deps};
     use crate::manager::DependencyManager;
     use crate::service::Service;
-    use crate::{controller, get, impl_routes, post};
+    use crate::{controller, ControllerRoutes};
 
     struct TestService1;
 
@@ -95,11 +95,12 @@ mod tests {
         assert_eq!(s1.get_hello(), "hello from service 1");
     }
 
-    // === Controller Tests ===
+    // === Controller Tests (inventory-based) ===
 
     #[controller(path = "/api")]
     struct TestController;
 
+    #[controller]
     impl TestController {
         #[get("/hello")]
         async fn hello(&self) -> &'static str {
@@ -112,12 +113,13 @@ mod tests {
         }
 
         #[post("/items")]
-        async fn add_item(&self, axum::extract::Json(body): axum::extract::Json<String>) -> String {
+        async fn add_item(
+            &self,
+            axum::extract::Json(body): axum::extract::Json<String>,
+        ) -> String {
             format!("added: {}", body)
         }
     }
-
-    impl_routes!(TestController, [hello, get_item, add_item]);
 
     #[tokio::test]
     async fn controller_get_hello() {
@@ -208,17 +210,18 @@ mod tests {
         assert_eq!(response.status(), StatusCode::NOT_FOUND);
     }
 
+    // === Multiple impl blocks ===
+
     #[controller(path = "/api/other")]
     struct AnotherController;
 
+    #[controller]
     impl AnotherController {
         #[get("/test")]
         async fn test(&self) -> &'static str {
             "from another"
         }
     }
-
-    impl_routes!(AnotherController, [test]);
 
     #[tokio::test]
     async fn merge_different_controllers() {

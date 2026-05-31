@@ -67,13 +67,14 @@ inject_services!(manager, "MyFunc", {
 ### Controller — macros for Axum routes
 
 ```rust
-use desert_framework::{controller, get, post, impl_routes};
+use desert_framework::controller;
 
 #[controller(path = "/api/users")]
 struct UserController {
     user_service: Arc<UserService>,
 }
 
+#[controller]
 impl UserController {
     #[get("/")]
     async fn list(&self) -> Json<Vec<User>> {
@@ -91,8 +92,6 @@ impl UserController {
     }
 }
 
-impl_routes!(UserController, [list, get, create]);
-
 // Usage in application
 let controller = UserController { user_service };
 let router = controller.get_router();
@@ -102,17 +101,42 @@ let app = Router::new()
     .merge(post_controller.get_router());
 ```
 
+#### Multiple impl blocks
+
+Routes are discovered automatically via `inventory`. You can split methods across multiple `impl` blocks and even multiple files:
+
+```rust
+// file: user_controller.rs
+#[controller(path = "/api/users")]
+struct UserController { ... }
+
+#[controller]
+impl UserController {
+    #[get("/")]
+    async fn list(&self) -> Json<Vec<User>> { ... }
+}
+
+// file: user_create.rs
+#[controller]
+impl UserController {
+    #[post("/")]
+    async fn create(&self, Json(body): Json<CreateUser>) -> Json<User> { ... }
+}
+
+// Both routes are automatically included in get_router()
+```
+
 ## Macros
 
 | Macro | Description |
 |-------|-------------|
-| `#[controller(path = "/prefix")]` | Defines controller with base path |
+| `#[controller(path = "/prefix")]` | Defines controller with base path (on struct) |
+| `#[controller]` | Discovers route methods in impl block (on impl) |
 | `#[get("/path")]` | GET route |
 | `#[post("/path")]` | POST route |
 | `#[put("/path")]` | PUT route |
 | `#[delete("/path")]` | DELETE route |
 | `#[patch("/path")]` | PATCH route |
-| `impl_routes!(Type, [methods])` | Generates `get_router()` for controller |
 | `inject_services!` | Quick service injection |
 
 ## Route Parameters

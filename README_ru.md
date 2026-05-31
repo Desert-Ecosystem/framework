@@ -67,13 +67,14 @@ inject_services!(manager, "MyFunc", {
 ### Controller — макросы для Axum маршрутов
 
 ```rust
-use desert_framework::{controller, get, post, impl_routes};
+use desert_framework::controller;
 
 #[controller(path = "/api/users")]
 struct UserController {
     user_service: Arc<UserService>,
 }
 
+#[controller]
 impl UserController {
     #[get("/")]
     async fn list(&self) -> Json<Vec<User>> {
@@ -91,8 +92,6 @@ impl UserController {
     }
 }
 
-impl_routes!(UserController, [list, get, create]);
-
 // Использование в приложении
 let controller = UserController { user_service };
 let router = controller.get_router();
@@ -102,17 +101,42 @@ let app = Router::new()
     .merge(post_controller.get_router());
 ```
 
+#### Несколько impl блоков
+
+Маршруты обнаруживаются автоматически через `inventory`. Можно разбить методы на несколько `impl` блоков и даже по разным файлам:
+
+```rust
+// файл: user_controller.rs
+#[controller(path = "/api/users")]
+struct UserController { ... }
+
+#[controller]
+impl UserController {
+    #[get("/")]
+    async fn list(&self) -> Json<Vec<User>> { ... }
+}
+
+// файл: user_create.rs
+#[controller]
+impl UserController {
+    #[post("/")]
+    async fn create(&self, Json(body): Json<CreateUser>) -> Json<User> { ... }
+}
+
+// Оба маршрута автоматически попадут в get_router()
+```
+
 ## Макросы
 
 | Макрос | Назначение |
 |--------|-----------|
-| `#[controller(path = "/prefix")]` | Определяет контроллер с базовым путём |
+| `#[controller(path = "/prefix")]` | Определяет контроллер с базовым путём (на struct) |
+| `#[controller]` | Обнаруживает route-методы в impl блоке (на impl) |
 | `#[get("/path")]` | GET маршрут |
 | `#[post("/path")]` | POST маршрут |
 | `#[put("/path")]` | PUT маршрут |
 | `#[delete("/path")]` | DELETE маршрут |
 | `#[patch("/path")]` | PATCH маршрут |
-| `impl_routes!(Type, [methods])` | Генерирует `get_router()` для контроллера |
 | `inject_services!` | Быстрая инъекция сервисов |
 
 ## Параметры маршрутов
