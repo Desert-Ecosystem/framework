@@ -113,10 +113,7 @@ mod tests {
         }
 
         #[post("/items")]
-        async fn add_item(
-            &self,
-            axum::extract::Json(body): axum::extract::Json<String>,
-        ) -> String {
+        async fn add_item(&self, axum::extract::Json(body): axum::extract::Json<String>) -> String {
             format!("added: {}", body)
         }
     }

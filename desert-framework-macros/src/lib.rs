@@ -156,15 +156,11 @@ fn controller_on_impl(impl_block: ItemImpl) -> TokenStream {
                     }
                 };
 
-                let factory_name =
-                    syn::Ident::new(&format!("__make_route_{}", name), name.span());
+                let factory_name = syn::Ident::new(&format!("__make_route_{}", name), name.span());
 
                 // Cleaned method (without route attribute)
-                let non_route_attrs: Vec<_> = method
-                    .attrs
-                    .iter()
-                    .filter(|a| !is_route_attr(a))
-                    .collect();
+                let non_route_attrs: Vec<_> =
+                    method.attrs.iter().filter(|a| !is_route_attr(a)).collect();
                 let vis = &method.vis;
                 let sig = &method.sig;
                 let block = &method.block;
