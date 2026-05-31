@@ -2,14 +2,19 @@
 
 [English version](README.md)
 
+[![crates.io](https://img.shields.io/crates/v/desert_framework.svg)](https://crates.io/crates/desert_framework)
+[![docs.rs](https://docs.rs/desert_framework/badge.svg)](https://docs.rs/desert_framework)
+
 Микрофреймворк для построения backend приложений на Rust с Axum. Предоставляет систему внедрения зависимостей и макросы для декларативного определения маршрутов.
 
 ## Установка
 
 ```toml
 [dependencies]
-desert-framework = "0.1.0"
+desert-framework = "*"
 ```
+
+> Актуальную версию смотрите на [crates.io](https://crates.io/crates/desert_framework).
 
 ## Модули
 

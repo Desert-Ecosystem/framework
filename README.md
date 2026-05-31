@@ -2,14 +2,19 @@
 
 [Русская версия](README_ru.md)
 
+[![crates.io](https://img.shields.io/crates/v/desert_framework.svg)](https://crates.io/crates/desert_framework)
+[![docs.rs](https://docs.rs/desert_framework/badge.svg)](https://docs.rs/desert_framework)
+
 Micro-framework for building backend applications in Rust with Axum. Provides dependency injection system and macros for declarative route definitions.
 
 ## Installation
 
 ```toml
 [dependencies]
-desert-framework = "0.1.0"
+desert-framework = "*"
 ```
+
+> Check [crates.io](https://crates.io/crates/desert_framework) for the latest version.
 
 ## Modules
 
