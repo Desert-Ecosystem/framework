@@ -16,14 +16,28 @@ pub fn generate_openapi(mut base: OpenApi) -> OpenApi {
 }
 
 /// Helper to register a Path into OpenApi.
-pub fn register_path<P: utoipa::Path + utoipa::__dev::SchemaReferences>(openapi: &mut OpenApi) {
+pub fn register_path<'t, P: utoipa::Path + utoipa::__dev::Tags<'t> + utoipa::__dev::SchemaReferences>(
+    openapi: &mut OpenApi,
+) {
     if openapi.paths.paths.is_empty() && openapi.paths.extensions.is_none() {
         openapi.paths = Paths::new();
     }
 
     let path_str = P::path();
     let methods = P::methods();
-    let operation = P::operation();
+    let mut operation = P::operation();
+
+    // utoipa generates Tags<'t> for each path item, but P::operation() does not attach tags
+    // unless PathConfig / operation tags are explicitly populated.
+    let tags = P::tags();
+    if !tags.is_empty() {
+        let op_tags = operation.tags.get_or_insert_with(Vec::new);
+        for tag in tags {
+            if !op_tags.iter().any(|t| t == tag) {
+                op_tags.push(tag.to_string());
+            }
+        }
+    }
 
     openapi
         .paths
