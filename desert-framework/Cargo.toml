@@ -1,6 +1,6 @@
 [package]
 name = "desert_framework"
-version = "0.1.4"
+version = "0.1.5"
 edition = "2021"
 description = "Micro-framework for building backend applications in Rust with Axum"
 license = "MIT"
@@ -11,7 +11,7 @@ tokio = { version = "1.47.1", features = ["sync"] }
 log = "0.4.28"
 axum = "0.8"
 inventory = "0.3"
-desert-framework-macros = { version = "0.1.4", path = "../desert-framework-macros" }
+desert-framework-macros = { version = "0.1.5", path = "../desert-framework-macros" }
 utoipa = { version = "6.0.0", optional = true }
 
 [features]

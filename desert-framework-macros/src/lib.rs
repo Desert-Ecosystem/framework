@@ -195,7 +195,6 @@ fn controller_on_impl(impl_block: ItemImpl) -> TokenStream {
                         syn::Ident::new(&format!("__path_{}", doc_fn_name), name.span());
 
                     openapi_items.push(quote! {
-                        #[cfg(feature = "openapi")]
                         const _: () = {
                             #utoipa_attr
                             #[allow(dead_code)]
