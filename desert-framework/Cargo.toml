@@ -12,6 +12,11 @@ log = "0.4.28"
 axum = "0.8"
 inventory = "0.3"
 desert-framework-macros = { path = "../desert-framework-macros" }
+utoipa = { version = "6.0.0", optional = true }
+
+[features]
+default = []
+openapi = ["dep:utoipa"]
 
 [dev-dependencies]
 tokio = { version = "1.47.1", features = ["full"] }

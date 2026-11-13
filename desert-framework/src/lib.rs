@@ -8,7 +8,13 @@ pub mod route;
 pub mod service;
 pub mod test;
 
+#[cfg(feature = "openapi")]
+pub mod openapi;
+
 pub use controller::ControllerRoutes;
 pub use desert_framework_macros::*;
 pub use inventory;
 pub use route::RouteEntry;
+
+#[cfg(feature = "openapi")]
+pub use openapi::{generate_openapi, register_path, OpenApiEntry};

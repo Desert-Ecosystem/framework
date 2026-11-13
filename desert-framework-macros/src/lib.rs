@@ -71,6 +71,17 @@ fn is_route_attr(attr: &syn::Attribute) -> bool {
     matches!(ident.as_str(), "get" | "post" | "put" | "delete" | "patch")
 }
 
+fn is_utoipa_path_attr(attr: &syn::Attribute) -> bool {
+    let segs = &attr.path().segments;
+    if segs.len() == 2 && segs[0].ident == "utoipa" && segs[1].ident == "path" {
+        return true;
+    }
+    if segs.len() == 1 && segs[0].ident == "path" {
+        return true;
+    }
+    false
+}
+
 /// #[controller(path = "/api")] on struct
 fn controller_on_struct(path: String, s: ItemStruct) -> TokenStream {
     let name = &s.ident;
@@ -101,6 +112,7 @@ fn controller_on_impl(impl_block: ItemImpl) -> TokenStream {
     let mut cleaned_methods: Vec<TokenStream2> = Vec::new();
     let mut factory_fns: Vec<TokenStream2> = Vec::new();
     let mut inventory_submits: Vec<TokenStream2> = Vec::new();
+    let mut openapi_items: Vec<TokenStream2> = Vec::new();
 
     for item in &impl_block.items {
         if let ImplItem::Fn(method) = item {
@@ -158,9 +170,15 @@ fn controller_on_impl(impl_block: ItemImpl) -> TokenStream {
 
                 let factory_name = syn::Ident::new(&format!("__make_route_{}", name), name.span());
 
-                // Cleaned method (without route attribute)
-                let non_route_attrs: Vec<_> =
-                    method.attrs.iter().filter(|a| !is_route_attr(a)).collect();
+                // Find optional #[utoipa::path(...)] attribute
+                let utoipa_attr = method.attrs.iter().find(|a| is_utoipa_path_attr(a));
+
+                // Cleaned method (without route attribute and without utoipa::path attribute)
+                let non_route_attrs: Vec<_> = method
+                    .attrs
+                    .iter()
+                    .filter(|a| !is_route_attr(a) && !is_utoipa_path_attr(a))
+                    .collect();
                 let vis = &method.vis;
                 let sig = &method.sig;
                 let block = &method.block;
@@ -169,6 +187,30 @@ fn controller_on_impl(impl_block: ItemImpl) -> TokenStream {
                     #(#non_route_attrs)*
                     #vis #sig #block
                 });
+
+                if let Some(utoipa_attr) = utoipa_attr {
+                    let doc_fn_name =
+                        syn::Ident::new(&format!("__utoipa_doc_{}", name), name.span());
+                    let path_type =
+                        syn::Ident::new(&format!("__path_{}", doc_fn_name), name.span());
+
+                    openapi_items.push(quote! {
+                        #[cfg(feature = "openapi")]
+                        const _: () = {
+                            #utoipa_attr
+                            #[allow(dead_code)]
+                            fn #doc_fn_name() {}
+
+                            ::desert_framework::inventory::submit! {
+                                ::desert_framework::OpenApiEntry {
+                                    modify: |openapi| {
+                                        ::desert_framework::register_path::<#path_type>(openapi);
+                                    }
+                                }
+                            }
+                        };
+                    });
+                }
 
                 // Factory function (type-erased)
                 factory_fns.push(quote! {
@@ -211,6 +253,7 @@ fn controller_on_impl(impl_block: ItemImpl) -> TokenStream {
 
         #(#factory_fns)*
         #(#inventory_submits)*
+        #(#openapi_items)*
     }
     .into()
 }

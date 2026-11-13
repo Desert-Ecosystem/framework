@@ -258,4 +258,38 @@ mod tests {
             .unwrap();
         assert_eq!(body, "from another");
     }
+
+    #[cfg(feature = "openapi")]
+    mod openapi_tests {
+        use super::*;
+        use utoipa::OpenApi;
+
+        #[controller(path = "/doc_api")]
+        struct DocController;
+
+        #[controller]
+        impl DocController {
+            #[get("/ping")]
+            #[utoipa::path(
+                get,
+                path = "/doc_api/ping",
+                responses(
+                    (status = 200, description = "pong response")
+                )
+            )]
+            async fn ping(&self) -> &'static str {
+                "pong"
+            }
+        }
+
+        #[derive(OpenApi)]
+        #[openapi(info(title = "Test API", version = "1.0.0"))]
+        struct BaseApiDoc;
+
+        #[test]
+        fn test_openapi_collection() {
+            let api = crate::generate_openapi(BaseApiDoc::openapi());
+            assert!(api.paths.paths.contains_key("/doc_api/ping"));
+        }
+    }
 }
